@@ -1,50 +1,51 @@
-HALAXY CLINIC —  WEBSITE 
-=================================================
+HALAXY CLINIC — FREE PUBLIC HOSTING SETUP (DEMO)
+================================================
+This edition is adapted for a static host (Netlify) and Supabase cloud authentication/database. It does not use PHP, WAMP, or a Python server at runtime.
 
-START THE WEBSITE
-1. Extract this ZIP to a folder (for example Desktop\halaxy-sqlite-website).
-2. Double-click START-HALAXY.bat.
-3. A command window will open. Keep it open while using the website.
-4. Open your browser and go to http://127.0.0.1:8000
-5. To stop the website, close the command window or press Ctrl+C.
+IMPORTANT
+- This is a demonstration project, NOT ready for real patient/medical records.
+- Do not put real patient information in this demo. Production healthcare use requires professional security, privacy, access-control, backup, and legal review.
+- Supabase Free projects can pause after a week of inactivity and have quotas. Netlify Free also has usage limits. Check their current terms.
+- The Supabase anon/publishable key is intended for browser use ONLY when Row Level Security (RLS) policies are enabled. NEVER paste a Supabase service_role/secret key into index.html.
 
-DEMO ACCOUNTS
-Doctor:  doctor@halaxy.com  / password
-Patient: patient@halaxy.com / password
+PART A — CREATE SUPABASE BACKEND
+1. Go to https://supabase.com/ and create a free account/project.
+2. Open the project dashboard > SQL Editor > New query.
+3. Open supabase-schema.sql from this ZIP, copy all its contents into the SQL editor, and click Run.
+4. In Supabase project settings, find the Project URL and anon/public key (sometimes labelled publishable key).
+5. Open index.html in a text editor (Notepad is fine).
+6. Near the top of the JavaScript, replace:
+   PASTE_SUPABASE_PROJECT_URL_HERE
+   PASTE_SUPABASE_ANON_KEY_HERE
+   with your own Project URL and anon/public key. Keep the quotes around the values.
+7. In Supabase Authentication settings, configure the allowed Site URL and redirect URL after your Netlify URL is created. Keep email confirmation enabled where possible; users may need to confirm their email before logging in.
 
-DATABASE LOCATION
-Your records are stored in:
-  clinic_data\halaxy.db
+PART B — CREATE A PUBLIC URL ON NETLIFY
+1. Extract this ZIP.
+2. Go to https://app.netlify.com/drop (sign up/log in if prompted).
+3. Drag the extracted halaxy-free-cloud folder onto the drop area. Upload the folder itself containing index.html and netlify.toml, not the ZIP file.
+4. Netlify should publish it and give you a public URL ending in netlify.app.
+5. Add that URL to Supabase Authentication > URL Configuration as the Site URL and an allowed redirect URL.
+6. Refresh your Netlify URL and test registration/login using demo accounts only.
 
-This is a real SQLite database file. The app creates the folder and database
-automatically the first time it runs. Do not delete this file if you want to keep
-your records. Back it up regularly by copying the clinic_data folder while the
-server is stopped. You can also use the Export data backup button in the website
-to download a JSON export.
+PART C — CREATE A DOCTOR ACCOUNT (ADMIN ACTION)
+Public signup deliberately creates patient accounts only. To promote your own account to doctor:
+1. Register an account from your public site and confirm your email if requested.
+2. In Supabase Dashboard > SQL Editor, run this query after replacing the email:
+   update public.profiles set role='doctor' where email='YOUR-EMAIL@example.com';
+3. Log out and log back in. Only promote an account you control.
 
 FEATURES
-- Public clinic landing page
-- Patient and doctor account registration/login
-- Passwords hashed using PBKDF2 (not stored as plain text)
-- Patient and doctor dashboards
-- Book appointments
-- Doctor approve/complete/cancel appointment workflow
-- Patients can cancel pending requests
-- Patient directory for doctors
-- Payment history display
-- Clinic settings
-- JSON data export
-- SQLite persistence across browser restarts
+- Patient registration/login (Supabase Auth)
+- Patient dashboard and appointment requests
+- Doctor dashboard, appointment approval/completion/cancellation
+- Patient list and payment history display
+- Clinic settings and JSON export
+- Cloud Postgres database with row-level security policies
 
-IMPORTANT LIMITATIONS / PRODUCTION
-This is a small local demonstration app. It is configured to listen only on this
-computer (127.0.0.1), so other computers cannot connect to it by default.
-It does not provide production-grade healthcare security, audit logs, encrypted
-database storage, advanced role administration, automated backups or compliance
-controls. Do not use it for real patient medical records until it has been
-professionally secured, reviewed and deployed with appropriate privacy safeguards.
-
-If you need multiple computers to share the same database, the app must be deployed
-on a trusted clinic network/server with secure authentication, HTTPS, backups and
-appropriate access controls. Do not simply expose this development server to the
-internet.
+LIMITATIONS / SETUP NOTES
+- This is a conversion from the previous Python/SQLite demo to Supabase. It needs the URL/key and SQL setup above before it can work.
+- Email confirmations may mean a newly registered user must confirm their email before logging in.
+- A doctor account must be promoted manually in Supabase as described above.
+- Payments are records only; this does not process real payments.
+- Do not publish the Supabase service_role key or any secret key in the browser.
