@@ -7,9 +7,10 @@ import sqlite3, json, hashlib, secrets, os, mimetypes, threading
 from datetime import date, datetime
 
 ROOT = Path(__file__).resolve().parent
-DATA_DIR = ROOT / "clinic_data"
+DATA_DIR = Path(os.environ.get("HALAXY_DATA_DIR", str(ROOT / "clinic_data")))
 DB_PATH = DATA_DIR / "halaxy.db"
-HOST, PORT = "127.0.0.1", 8000
+# Render and other hosts provide PORT and require binding to 0.0.0.0.
+HOST, PORT = "0.0.0.0", int(os.environ.get("PORT", "8000"))
 SESSIONS = {}
 LOCK = threading.Lock()
 
@@ -195,7 +196,8 @@ class Handler(BaseHTTPRequestHandler):
     def login_user(self, uid):
         token=secrets.token_urlsafe(32); SESSIONS[token]=uid
         with db() as c: u=asdict(c.execute("SELECT id,name,email,role,phone FROM users WHERE id=?",(uid,)).fetchone())
-        return self.send_json({"user":u},headers={"Set-Cookie":f"halaxy_session={token}; HttpOnly; SameSite=Lax; Path=/"})
+        cookie_secure = "; Secure" if os.environ.get("RENDER") else ""
+        return self.send_json({"user":u},headers={"Set-Cookie":f"halaxy_session={token}; HttpOnly; SameSite=Lax; Path=/{cookie_secure}"})
 
     def do_PATCH(self):
         path=urlparse(self.path).path

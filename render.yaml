@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: halaxy-clinic-demo
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: HALAXY_DATA_DIR
+        value: /var/data

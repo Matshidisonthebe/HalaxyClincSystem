@@ -1,5 +1,18 @@
-HALAXY CLINIC 
+HALAXY CLINIC — SQLITE WEBSITE (NO PHP / NO WAMP)
 =================================================
+
+WHAT YOU NEED
+- Windows 10/11
+- Python 3.9 or newer (free)
+- A modern browser such as Chrome or Edge
+
+This app uses Python's built-in web server and SQLite database. It does not need PHP,
+WAMP, XAMPP, MySQL, Node.js, Flask or any third-party Python packages.
+
+INSTALL PYTHON
+1. If Python is not installed, download it from https://www.python.org/downloads/
+2. During installation, tick "Add Python to PATH".
+3. Finish installation.
 
 START THE WEBSITE
 1. Extract this ZIP to a folder (for example Desktop\halaxy-sqlite-website).

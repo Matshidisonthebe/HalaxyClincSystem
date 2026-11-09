@@ -1,0 +1,1 @@
+# Halaxy Clinic uses only the Python standard library.
